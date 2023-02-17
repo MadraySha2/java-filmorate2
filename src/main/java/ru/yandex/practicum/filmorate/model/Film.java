@@ -23,7 +23,8 @@ public class Film {
     @Size(min = 2, max = 200, message = "Description should be not empty & less then 200")
     @NotEmpty
     private String description;
-    //@PastOrPresent(message = "Incorrect date!")
+
+    @PastOrPresent(message = "Incorrect date!")
     @CorrectDate
     private LocalDate releaseDate;
     @Positive
