@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
 
@@ -23,6 +20,7 @@ public class User {
 
     private String name;
 
+    @NotEmpty
     @Past(message = "Incorrect date!")
     private LocalDate birthday;
 
