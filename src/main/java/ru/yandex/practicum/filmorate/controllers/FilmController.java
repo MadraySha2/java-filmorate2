@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -20,7 +22,7 @@ public class FilmController {
         if (filmsList.isEmpty()) {
             return null;
         }
-        return filmsList.values().stream().toList();
+        return new ArrayList<>(filmsList.values());
     }
 
     @PostMapping(value = "/add-film")
