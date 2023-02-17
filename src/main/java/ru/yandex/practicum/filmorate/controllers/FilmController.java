@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/films")
 @Slf4j
 public class FilmController {
     private final HashMap<Integer, Film> filmsList = new HashMap<>();
     private int id = 0;
 
-    @GetMapping("/films")
+    @GetMapping
     public List<Film> getFilmsList() {
 
         if (filmsList.isEmpty()) {
@@ -26,7 +27,7 @@ public class FilmController {
         return new ArrayList<>(filmsList.values());
     }
 
-    @PostMapping(value = "/add-film")
+    @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         id += 1;
         filmsList.put(id, film);
@@ -34,9 +35,14 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping(value = "/upd-film")
+    @PutMapping
     public Film updFilm(@Valid @RequestBody Film film) {
+       if (filmsList.containsKey(film.getId())){
             filmsList.put(film.getId(), film);
+        }
+       else {
+           throw new RuntimeException("User inst registered!");
+       }
             return film;
     }
 

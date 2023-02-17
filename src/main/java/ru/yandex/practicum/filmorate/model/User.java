@@ -21,6 +21,7 @@ public class User {
     @Pattern(regexp = "^\\S*$", message = "Incorrect login!")
     private String login;
 
+
     private String name;
 
     @NotNull

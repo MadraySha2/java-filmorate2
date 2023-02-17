@@ -79,7 +79,7 @@ class UserControllerTest {
         String errJson3 = objectMapper.writeValueAsString(user5);
 
         mvc.getDispatcherServlet().getServletConfig();
-        URI uri = new URI("http://localhost:8080/add-user");
+        URI uri = new URI("http://localhost:8080/users");
         mvc.perform(post(uri).content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         mvc.perform(post(uri).content(errJson).contentType(MediaType.APPLICATION_JSON))
@@ -91,7 +91,7 @@ class UserControllerTest {
         mvc.perform(post(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        URI uri2 = new URI("http://localhost:8080/upd-user");
+        URI uri2 = new URI("http://localhost:8080/users");
         mvc.perform(put(uri2).content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         mvc.perform(put(uri2).content(errJson).contentType(MediaType.APPLICATION_JSON))
