@@ -32,15 +32,15 @@ class FilmControllerTest {
 
     @Test
     void getFilmsList() throws Exception {
-        this.mvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/users")
+        this.mvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/films")
                 .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
     void addFilmAndRefresh_Controller() throws Exception {
-        Film film = Film.builder().id(1).name("Test")
-                .description("Test")
-                .releaseDate(LocalDate.of(2023, 2, 13))
+        Film film = Film.builder().name("nisi eiusmod")
+                .description("adipisicing")
+                .releaseDate(LocalDate.of(2022, 2, 13))
                 .duration(100L).build();
         Film filmEr = Film.builder().id(2).name("")
                 .description("Test")
@@ -68,9 +68,9 @@ class FilmControllerTest {
         String errJson3 = objectMapper.writeValueAsString(filmEr4);
 
         mvc.getDispatcherServlet().getServletConfig();
-        URI uri = new URI("http://localhost:8080/add-film");
+        URI uri = new URI("http://localhost:8080/films");
         mvc.perform(post(uri).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk());
         mvc.perform(post(uri).content(errJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         mvc.perform(post(uri).content(errJson1).contentType(MediaType.APPLICATION_JSON))
@@ -80,7 +80,7 @@ class FilmControllerTest {
         mvc.perform(post(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        URI uri2 = new URI("http://localhost:8080/upd-film");
+        URI uri2 = new URI("http://localhost:8080/films");
         mvc.perform(put(uri2).content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         mvc.perform(put(uri2).content(errJson).contentType(MediaType.APPLICATION_JSON))
