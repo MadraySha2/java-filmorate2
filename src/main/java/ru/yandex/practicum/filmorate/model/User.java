@@ -20,7 +20,7 @@ public class User {
 
     private String name;
 
-    @NotEmpty
+    @NotNull
     @Past(message = "Incorrect date!")
     private LocalDate birthday;
 
