@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updUser(@RequestBody User user) {
+    public User updUser(@Valid @RequestBody User user) {
         if (userList.containsKey(user.getId())){
             userList.put(user.getId(), user);
         }

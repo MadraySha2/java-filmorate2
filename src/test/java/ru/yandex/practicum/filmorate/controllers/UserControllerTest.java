@@ -94,7 +94,10 @@ class UserControllerTest {
         URI uri2 = new URI("http://localhost:8080/users");
         mvc.perform(put(uri2).content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
-
+        mvc.perform(put(uri2).content(errJson1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        mvc.perform(put(uri2).content(errJson3).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
