@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 @ValidateOnExecution
 public class User {
+    @PositiveOrZero
     private int id;
     @Email(message = "Incorrect Email!")
     private String email;
@@ -21,7 +22,7 @@ public class User {
     private String name;
 
     @NotNull
-    @Past(message = "Incorrect date!")
+    @PastOrPresent(message = "Incorrect date!")
     private LocalDate birthday;
 
 
