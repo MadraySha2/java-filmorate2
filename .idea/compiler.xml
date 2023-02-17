@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="filmorate" target="11" />
+      <module name="filmorate" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
