@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/films")
@@ -22,7 +21,7 @@ public class FilmController {
     public List<Film> getFilmsList() {
 
         if (filmsList.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return new ArrayList<>(filmsList.values());
     }
@@ -37,13 +36,12 @@ public class FilmController {
 
     @PutMapping
     public Film updFilm(@Valid @RequestBody Film film) {
-       if (filmsList.containsKey(film.getId())){
+        if (filmsList.containsKey(film.getId())) {
             filmsList.put(film.getId(), film);
+        } else {
+            throw new RuntimeException("User inst registered!");
         }
-       else {
-           throw new RuntimeException("User inst registered!");
-       }
-            return film;
+        return film;
     }
 
 }

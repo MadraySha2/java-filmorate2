@@ -20,7 +20,7 @@ public class UserController {
     @GetMapping
     public List<User> getUserList() {
         if (userList.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<User> userListList = new ArrayList<>(userList.values());
         return userListList;
@@ -39,10 +39,9 @@ public class UserController {
 
     @PutMapping
     public User updUser(@Valid @RequestBody User user) {
-        if (userList.containsKey(user.getId())){
+        if (userList.containsKey(user.getId())) {
             userList.put(user.getId(), user);
-        }
-        else {
+        } else {
             throw new RuntimeException("User inst registered!");
         }
         return user;

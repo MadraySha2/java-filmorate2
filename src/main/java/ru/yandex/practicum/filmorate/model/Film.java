@@ -15,8 +15,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ValidateOnExecution
 public class Film {
-    @PositiveOrZero
-    int id;
+
+    Integer id;
     @NotEmpty(message = "Empty name!")
     @NotNull
     private String name;

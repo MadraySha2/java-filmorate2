@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,12 +25,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest {
 
+    UserControllerTest() throws URISyntaxException {
+    }
+
     @Autowired
     private MockMvc mvc;
 
     UserController uc = new UserController();
     @MockBean
     UserController service;
+
+    URI uri = new URI("http://localhost:8080/users");
+    JsonMapper objectMapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
+
 
     @Test
     void getUserList() throws Exception {
@@ -45,58 +55,74 @@ class UserControllerTest {
                 .name("test")
                 .birthday(LocalDate.of(2000, 2, 24))
                 .build();
+        String json = objectMapper.writeValueAsString(user);
+
+        mvc.perform(post(uri).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        mvc.perform(put(uri).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    void addAndPutUser_ControllerBadStatus_BadEmail() throws Exception {
         User user2 = User.builder().id(2)
                 .email("test- @")
                 .login("test")
                 .name("test")
                 .birthday(LocalDate.of(2000, 2, 24))
                 .build();
+        String errJson = objectMapper.writeValueAsString(user2);
+
+        mvc.perform(post(uri).content(errJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        mvc.perform(put(uri).content(errJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addAndPutUser_ControllerBadStatus_BadLogin() throws Exception {
         User user3 = User.builder().id(3)
                 .email("test@test.ru")
                 .login("")
                 .name("test")
                 .birthday(LocalDate.of(2000, 2, 24))
                 .build();
+        String errJson1 = objectMapper.writeValueAsString(user3);
+
+        mvc.perform(post(uri).content(errJson1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        mvc.perform(put(uri).content(errJson1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addAndPutUser_ControllerOKStatus_EmptyName() throws Exception {
         User user4 = User.builder().id(4)
                 .email("test@test.ru")
                 .login("test")
                 .birthday(LocalDate.of(2000, 2, 24))
                 .build();
+        String errJson2 = objectMapper.writeValueAsString(user4);
+
+        mvc.perform(post(uri).content(errJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mvc.perform(put(uri).content(errJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void addAndPutUser_ControllerBadStatus_FutureBirthday() throws Exception {
         User user5 = User.builder().id(5)
                 .email("test@test.ru")
                 .login("test")
                 .name("test")
                 .birthday(LocalDate.of(3000, 2, 24))
                 .build();
-
-        JsonMapper objectMapper = JsonMapper.builder()
-                .addModule(new JavaTimeModule())
-                .build();
-        String json = objectMapper.writeValueAsString(user);
-        String errJson = objectMapper.writeValueAsString(user2);
-        String errJson1 = objectMapper.writeValueAsString(user3);
-        String errJson2 = objectMapper.writeValueAsString(user4);
         String errJson3 = objectMapper.writeValueAsString(user5);
 
-        mvc.getDispatcherServlet().getServletConfig();
-        URI uri = new URI("http://localhost:8080/users");
-        mvc.perform(post(uri).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-        mvc.perform(post(uri).content(errJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        mvc.perform(post(uri).content(errJson1).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        mvc.perform(post(uri).content(errJson2).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
         mvc.perform(post(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-
-        URI uri2 = new URI("http://localhost:8080/users");
-        mvc.perform(put(uri2).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-        mvc.perform(put(uri2).content(errJson1).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        mvc.perform(put(uri2).content(errJson3).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(put(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

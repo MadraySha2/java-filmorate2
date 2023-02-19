@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ValidateOnExecution
 public class User {
-    @PositiveOrZero
-    private int id;
+
+    private Integer id;
     @Email(message = "Incorrect Email!")
     private String email;
     @NotBlank(message = "Incorrect login!")
