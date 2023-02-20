@@ -19,10 +19,6 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilmsList() {
-
-        if (filmsList.isEmpty()) {
-            return new ArrayList<>();
-        }
         return new ArrayList<>(filmsList.values());
     }
 
