@@ -19,11 +19,8 @@ public class UserController {
 
     @GetMapping
     public List<User> getUserList() {
-        if (userList.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<User> userListList = new ArrayList<>(userList.values());
-        return userListList;
+        return new ArrayList<>(userList.values());
+        
     }
 
     @PostMapping
