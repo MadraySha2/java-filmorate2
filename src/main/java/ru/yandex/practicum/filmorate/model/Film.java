@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @ValidateOnExecution
 public class Film {
 
-    Integer id;
+    private Integer id;
     @NotEmpty(message = "Empty name!")
     @NotNull
     private String name;
