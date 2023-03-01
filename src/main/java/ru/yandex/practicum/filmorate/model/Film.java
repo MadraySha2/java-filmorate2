@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.validator.CorrectDate;
 import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -29,4 +31,6 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Long duration;
+
+    private Set<Long> userLikes;
 }

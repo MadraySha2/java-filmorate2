@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -28,5 +29,5 @@ public class User {
     @PastOrPresent(message = "Incorrect date!")
     private LocalDate birthday;
 
-
+    private Set<Long> friends;
 }
