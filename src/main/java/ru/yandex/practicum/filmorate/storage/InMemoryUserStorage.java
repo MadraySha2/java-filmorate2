@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.tags.form.SelectTag;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
     private final HashMap<Integer, User> userList = new HashMap<>();
     private int id = 0;
 
@@ -35,7 +34,7 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public List<User> getUsersFrendsList(Integer id) {
         User user = userList.get(id);
-        if (user.getFriends().isEmpty()){
+        if (user.getFriends().isEmpty()) {
             return new ArrayList<>();
         }
         List<User> friendList = new ArrayList<>();
@@ -49,11 +48,11 @@ public class InMemoryUserStorage implements UserStorage{
     public List<User> getUsersCommonFriends(Integer id, Integer otherId) {
         User user0 = userList.get(id);
         User user1 = userList.get(otherId);
-        if (user0.getFriends().isEmpty() || user1.getFriends().isEmpty()){
+        if (user0.getFriends().isEmpty() || user1.getFriends().isEmpty()) {
             return new ArrayList<>();
         }
         List<User> commonFriends = new ArrayList<>();
-        for (Long friend: user0.getFriends()) {
+        for (Long friend : user0.getFriends()) {
             if (user1.getFriends().contains(friend)) {
                 commonFriends.add(userList.get(id));
             }
@@ -80,8 +79,8 @@ public class InMemoryUserStorage implements UserStorage{
         User user1 = userList.get(friendId);
         Set<Long> friends = user.getFriends();
         Set<Long> friends1 = user1.getFriends();
-        friends.add((long)id);
-        friends1.add((long)id);
+        friends.add((long) id);
+        friends1.add((long) id);
         user.setFriends(friends);
         user1.setFriends(friends1);
         return user;
@@ -96,11 +95,11 @@ public class InMemoryUserStorage implements UserStorage{
         User user1 = userList.get(friendId);
         Set<Long> friends = user.getFriends();
         Set<Long> friends1 = user1.getFriends();
-        friends.remove((long)id);
-        friends1.remove((long)id);
+        friends.remove((long) id);
+        friends1.remove((long) id);
         user.setFriends(friends);
         user1.setFriends(friends1);
         return user;
     }
-    }
 }
+
