@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface FilmStorage {
 
     Film getFilmById(int id);
 
-    Film addFilm(Film film);
+    Film addFilm(Film film) throws DuplicateException;
 
     Film updFilm(Film film);
 

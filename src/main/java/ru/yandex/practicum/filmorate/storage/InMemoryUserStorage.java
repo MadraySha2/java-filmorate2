@@ -1,23 +1,27 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final HashMap<Integer, User> userList = new HashMap<>();
-    private int id = 0;
+    private HashMap<Integer, User> userList = new HashMap<>();
+    private Integer id = 0;
 
     @Override
     public User addUser(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
         id += 1;
         user.setId(id);
-        userList.put(id, user);
+        userList.put(user.getId(), user);
+        System.out.println(id);
         return user;
     }
 
@@ -28,78 +32,71 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(Integer id) {
+        if (!userList.containsKey(id)) {
+            throw new NotFoundException("User not found!");
+        }
         return userList.get(id);
     }
 
     @Override
-    public List<User> getUsersFrendsList(Integer id) {
-        User user = userList.get(id);
-        if (user.getFriends().isEmpty()) {
-            return new ArrayList<>();
+    public User updUser(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
         }
+        if (userList.containsKey(user.getId())) {
+            userList.put(user.getId(), user);
+        } else {
+            throw new NotFoundException("User inst registered!");
+        }
+        return user;
+    }
+
+    @Override
+    public List<User> getUsersFrendsList(Integer id) {
+        User user = getUserById(id);
         List<User> friendList = new ArrayList<>();
-        for (Long friendId : user.getFriends()) {
-            friendList.add(userList.get(friendId));
+        for (Integer friendId : user.getFriends()) {
+            friendList.add(getUserById(friendId));
         }
         return friendList;
     }
 
     @Override
-    public List<User> getUsersCommonFriends(Integer id, Integer otherId) {
-        User user0 = userList.get(id);
-        User user1 = userList.get(otherId);
-        if (user0.getFriends().isEmpty() || user1.getFriends().isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<User> commonFriends = new ArrayList<>();
-        for (Long friend : user0.getFriends()) {
+    public Set<User> getUsersCommonFriends(Integer id, Integer otherId) {
+        User user0 = getUserById(id);
+        User user1 = getUserById(otherId);
+        Set<User> commonFriends = new HashSet<>();
+        for (Integer friend : user0.getFriends()) {
             if (user1.getFriends().contains(friend)) {
-                commonFriends.add(userList.get(id));
+                commonFriends.add(getUserById(friend));
             }
         }
         return commonFriends;
     }
 
     @Override
-    public User updUser(User user) {
-        if (userList.containsKey(user.getId())) {
-            userList.put(user.getId(), user);
-        } else {
-            throw new RuntimeException("User inst registered!");
+    public User addFriend(Integer id, Integer friendId) throws DuplicateException {
+        if (id == friendId) {
+            throw new DuplicateException("User can't add own page to friends!");
         }
+        User user = getUserById(id);
+        User user1 = getUserById(friendId);
+        user.getFriends().add(friendId);
+        user1.getFriends().add(id);
         return user;
     }
 
     @Override
-    public User addFriend(Integer id, Integer friendId) {
-        if (!userList.containsKey(id) || !userList.containsKey(friendId)) {
-            return null;//throw err
+    public User deleteFriend(Integer id, Integer friendId) throws DuplicateException {
+        User user = getUserById(id);
+        User user1 = getUserById(friendId);
+        if (!user.getFriends().contains(friendId) || !user1.getFriends().contains(id)) {
+            throw new DuplicateException("Users not friends yet!");
         }
-        User user = userList.get(id);
-        User user1 = userList.get(friendId);
-        Set<Long> friends = user.getFriends();
-        Set<Long> friends1 = user1.getFriends();
-        friends.add((long) id);
-        friends1.add((long) id);
-        user.setFriends(friends);
-        user1.setFriends(friends1);
+        user.getFriends().remove(friendId);
+        user1.getFriends().remove(id);
         return user;
     }
 
-    @Override
-    public User deleteFriend(Integer id, Integer friendId) {
-        if (!userList.containsKey(id) || !userList.containsKey(friendId)) {
-            return null;//throw err
-        }
-        User user = userList.get(id);
-        User user1 = userList.get(friendId);
-        Set<Long> friends = user.getFriends();
-        Set<Long> friends1 = user1.getFriends();
-        friends.remove((long) id);
-        friends1.remove((long) id);
-        user.setFriends(friends);
-        user1.setFriends(friends1);
-        return user;
-    }
 }
 

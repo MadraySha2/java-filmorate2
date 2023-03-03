@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.util.LikesComparator;
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.util.LikesComparator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,16 +24,20 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int id) {
-        if(filmsList.containsKey(id)) {
+        if (filmsList.containsKey(id)) {
             return filmsList.get(id);
         }
-        return null; // throw err
+        throw new NotFoundException("Film not found!"); // throw err
     }
+
     @Override
-    public Film addFilm(Film film) {
+    public Film addFilm(Film film) throws DuplicateException {
         id += 1;
-        filmsList.put(id, film);
         film.setId(id);
+        if (filmsList.containsValue(film)) {
+            throw new DuplicateException("Film already added!");
+        }
+        filmsList.put(id, film);
         return film;
     }
 
@@ -40,7 +46,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (filmsList.containsKey(film.getId())) {
             filmsList.put(film.getId(), film);
         } else {
-            throw new RuntimeException("User inst registered!");
+            throw new NotFoundException("Film not found!");
         }
         return film;
     }
@@ -48,12 +54,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film like(int id, int userId) {
         if (!filmsList.containsKey(id)) {
-            return null;
+            throw new NotFoundException("Film not found!");
         }
         Film film = filmsList.get(id);
-        Set<Long> likes = film.getUserLikes();
-        likes.add((long) userId);
-        film.setUserLikes(likes);
+        film.getUserLikes().add(userId);
         filmsList.put(id, film);
         return film;
     }
@@ -61,12 +65,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film unLike(int id, int userId) {
         if (!filmsList.containsKey(id)) {
-            return null;
+            throw new NotFoundException("Film not found!");
         }
         Film film = filmsList.get(id);
-        Set<Long> likes = film.getUserLikes();
-        likes.remove(userId);
-        film.setUserLikes(likes);
+        if (!film.getUserLikes().contains(userId)) {
+            throw new NotFoundException("Film not found!");
+        }
+        film.getUserLikes().remove(userId);
         filmsList.put(id, film);
         return film;
     }
@@ -74,7 +79,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getMostPopularFilms(int count) {
         filmsRating.addAll(filmsList.values());
-        return filmsRating.stream().limit((long) count).collect(Collectors.toList());
+        return filmsRating.stream().limit(count).collect(Collectors.toList());
     }
 
 }

@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -27,13 +28,13 @@ public class FilmController {
         return service.getFilmById(id);
     }
 
-    @GetMapping("/popular?count={count}")
-    public List<Film> getRatedFilmsList(@PathVariable Integer count) {
+    @GetMapping("/popular")
+    public List<Film> getRatedFilmsList(@RequestParam(required = false, defaultValue = "10") Integer count) {
         return service.getMostPopularFilms(count);
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) throws DuplicateException {
         return service.addFilm(film);
     }
 

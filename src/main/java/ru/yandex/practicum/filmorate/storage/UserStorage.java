@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserStorage {
 
@@ -10,14 +12,15 @@ public interface UserStorage {
 
     User getUserById(Integer id);
 
-    List<User> getUsersFrendsList(Integer id);
-
-    List<User> getUsersCommonFriends(Integer id, Integer otherId);
-
     User addUser(User user);
 
     User updUser(User user);
 
-    User addFriend(Integer id, Integer friendId);
-    User deleteFriend(Integer id, Integer friendId);
+    List<User> getUsersFrendsList(Integer id);
+
+    Set<User> getUsersCommonFriends(Integer id, Integer otherId);
+
+    User addFriend(Integer id, Integer friendId) throws DuplicateException;
+
+    User deleteFriend(Integer id, Integer friendId) throws DuplicateException;
 }

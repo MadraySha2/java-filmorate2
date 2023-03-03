@@ -1,15 +1,16 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -17,6 +18,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService service;
+
     @Autowired
     public UserController(UserService service) {
         this.service = service;
@@ -25,26 +27,26 @@ public class UserController {
     @GetMapping
     public List<User> getUserList() {
         return service.getUsersList();
-
     }
+
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Integer id) {
         return service.getUserById(id);
     }
-    @GetMapping("{id}/friends")
-    public List<User> getUserFriendList(@PathVariable Integer id) {
+
+    @GetMapping("/{id}/friends")
+    public List<User> getUserFriendList(@PathVariable("id") Integer id) {
         return service.getUsersFrendsList(id);
     }
-    @GetMapping("{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends (@PathVariable Integer id, @PathVariable Integer otherId){
-        return service.getUsersCommonFriends(id,otherId);
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Set<User> getCommonFriends(@PathVariable("id") Integer id
+            , @PathVariable("otherId") Integer otherId) throws RuntimeException {
+        return service.getUsersCommonFriends(id, otherId);
     }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
         return service.addUser(user);
     }
 
@@ -53,12 +55,13 @@ public class UserController {
         return service.updUser(user);
     }
 
-    @PutMapping("{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable("id") Integer id, @PathVariable("friendId") Integer friendId) throws DuplicateException {
         return service.addFriend(id, friendId);
     }
-    @DeleteMapping("{id}/friends/{friendId}")
-    public User deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User deleteFriend(@PathVariable("id") Integer id, @PathVariable("friendId") Integer friendId) throws DuplicateException {
         return service.deleteFriend(id, friendId);
     }
 }

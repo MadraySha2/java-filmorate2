@@ -1,20 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Builder
-@AllArgsConstructor
 @ValidateOnExecution
 public class User {
-
     private Integer id;
     @Email(message = "Incorrect Email!")
     private String email;
@@ -29,5 +27,6 @@ public class User {
     @PastOrPresent(message = "Incorrect date!")
     private LocalDate birthday;
 
-    private Set<Long> friends;
+
+    private final Set<Integer> friends = new HashSet<>();
 }

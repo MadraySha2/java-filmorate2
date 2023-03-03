@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.CorrectDate;
@@ -9,12 +8,11 @@ import ru.yandex.practicum.filmorate.validator.CorrectDate;
 import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Builder
-@AllArgsConstructor
 @ValidateOnExecution
 public class Film {
 
@@ -32,5 +30,5 @@ public class Film {
     @Positive
     private Long duration;
 
-    private Set<Long> userLikes;
+    private final Set<Integer> userLikes = new HashSet<>();
 }
