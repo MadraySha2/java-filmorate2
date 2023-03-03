@@ -15,7 +15,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-        if (user.getName() == null) {
+        if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
         id += 1;
@@ -40,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updUser(User user) {
-        if (user.getName() == null) {
+        if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
         if (userList.containsKey(user.getId())) {
