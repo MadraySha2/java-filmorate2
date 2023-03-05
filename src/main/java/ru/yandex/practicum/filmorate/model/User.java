@@ -22,13 +22,11 @@ public class User {
     @Pattern(regexp = "^\\S*$", message = "Incorrect login!")
     private String login;
 
-
     private String name;
 
     @NotNull
     @PastOrPresent(message = "Incorrect date!")
     private LocalDate birthday;
-
 
     private final Set<Integer> friends = new HashSet<>();
 }

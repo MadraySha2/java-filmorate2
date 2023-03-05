@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final RuntimeException e) {
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
         return new ErrorResponse("Not found error", e.getMessage());
     }
 

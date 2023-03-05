@@ -13,11 +13,7 @@ public interface FilmStorage {
 
     Film addFilm(Film film) throws DuplicateException;
 
-    Film updFilm(Film film);
-
-    Film like(int id, int userId);
-
-    Film unLike(int id, int userId);
+    Film updateFilm(Film film);
 
     List<Film> getMostPopularFilms(int count);
 }

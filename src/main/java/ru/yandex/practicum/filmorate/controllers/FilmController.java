@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
@@ -14,42 +14,42 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FilmController {
-    private final FilmService service;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getFilmsList() {
-        return service.getFilmsList();
+        return filmService.getFilmsList();
     }
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Integer id) {
-        return service.getFilmById(id);
+        return filmService.getFilmById(id);
     }
 
     @GetMapping("/popular")
     public List<Film> getRatedFilmsList(@RequestParam(required = false, defaultValue = "10") Integer count) {
-        return service.getMostPopularFilms(count);
+        return filmService.getMostPopularFilms(count);
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) throws DuplicateException {
-        return service.addFilm(film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updFilm(@Valid @RequestBody Film film) {
-        return service.updFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        return service.likeFilm(id, userId);
+        return filmService.likeFilm(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public Film unlikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        return service.unlikeFilm(id, userId);
+        return filmService.unlikeFilm(id, userId);
     }
 }

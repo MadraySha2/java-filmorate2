@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,7 +35,7 @@ class FilmControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage()));
+    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
     @MockBean
     FilmController service;
 
