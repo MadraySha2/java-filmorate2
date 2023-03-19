@@ -2,7 +2,7 @@
 Template repository for Filmorate project.
 ![f](https://app.quickdatabasediagrams.com/#/d/Eq3q4E)
 
-```
+``` mermaid
 Film
 -
 Id PK int
