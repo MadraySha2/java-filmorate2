@@ -67,8 +67,15 @@ public class UserService {
         }
         User user = getUserById(id);
         User user1 = getUserById(friendId);
-        user.getFriends().add(friendId);
-        user1.getFriends().add(id);
+        if (user1.getUnacceptedFriends().contains(id)){
+            user.getFriends().add(friendId);
+            user.getUnacceptedFriends().remove(friendId);
+            user1.getFriends().add(id);
+            user1.getUnacceptedFriends().remove(id);
+            return user;
+        }
+        user.getUnacceptedFriends().add(friendId);
+        user1.getUnacceptedFriends().add(id);
         userStorage.updateUser(user);
         userStorage.updateUser(user1);
         return user;

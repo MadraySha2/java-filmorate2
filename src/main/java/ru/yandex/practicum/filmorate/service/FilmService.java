@@ -35,7 +35,7 @@ public class FilmService {
     }
 
     public Film likeFilm(Integer id, Integer userId) {
-        userStorage.getUserById(userId); // немного костыль, но как мне кажется, самы простой способ проверить, что юзер есть - если его нет, то будет исключние
+        userStorage.getUserById(userId);
         Film film = filmStorage.getFilmById(id);
         film.getUserLikes().add(userId);
         filmStorage.updateFilm(film);
