@@ -1,3 +1,3 @@
 # java-filmorate
 Template repository for Filmorate project.
-!https://app.quickdatabasediagrams.com/#/
+!(https://app.quickdatabasediagrams.com/#/)
