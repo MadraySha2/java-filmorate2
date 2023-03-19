@@ -141,6 +141,7 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(2023, 2, 13))
                 .duration(100L).build();
 
+
         filmController.addFilm(film);
         Assertions.assertEquals("Test", filmController.getFilmsList().get(0).getName());
         filmController.addFilm(film2);
