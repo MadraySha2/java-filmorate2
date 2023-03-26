@@ -1,3 +1,4 @@
 # java-filmorate
-Template repository for Filmorate project.
-https://app.quickdatabasediagrams.com/#/
+Схема предполагаемой БД для приложения. <br> 
+В FilmList и UserList хранятся объекты соотв типов, с уник. ключом в виде ID этих объектов <br>
+![f](https://i.ibb.co/nMkwC7L/Screenshot-2.png)
