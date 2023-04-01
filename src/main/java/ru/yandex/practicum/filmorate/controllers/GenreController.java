@@ -21,6 +21,7 @@ public class GenreController {
     public List<Genre> getGenres() {
         return filmDB.getGenres();
     }
+
     @GetMapping("/{id}")
     public Genre getGenreByID(@PathVariable Integer id) {
         return filmDB.getGenreById(id);
