@@ -16,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmController {
+
     private final FilmService filmService;
 
     @GetMapping
@@ -44,7 +45,7 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
+    public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) throws DuplicateException {
         return filmService.likeFilm(id, userId);
     }
 

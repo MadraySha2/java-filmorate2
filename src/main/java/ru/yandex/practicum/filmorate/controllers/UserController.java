@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.dao.UserDB;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,28 +27,28 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
+    public User getUserById(@PathVariable Integer id) throws DuplicateException {
         return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getUserFriendList(@PathVariable Integer id) {
+    public List<User> getUserFriendList(@PathVariable Integer id) throws DuplicateException {
         return userService.getUsersFrendsList(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Set<User> getCommonFriends(@PathVariable Integer id
-            , @PathVariable Integer otherId) throws RuntimeException {
+            , @PathVariable Integer otherId) throws RuntimeException, DuplicateException {
         return userService.getUsersCommonFriends(id, otherId);
     }
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) throws DuplicateException {
         return userService.addUser(user);
     }
 
     @PutMapping
-    public User updUser(@Valid @RequestBody User user) {
+    public User updUser(@Valid @RequestBody User user) throws DuplicateException {
         return userService.updateUser(user);
     }
 

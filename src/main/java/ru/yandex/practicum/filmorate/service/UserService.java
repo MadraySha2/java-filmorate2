@@ -22,25 +22,25 @@ public class UserService {
         return userStorage.getUsersList();
     }
 
-    public User addUser(User user) {
+    public User addUser(User user) throws DuplicateException {
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
         return userStorage.addUser(user);
     }
 
-    public User updateUser(User user) {
+    public User updateUser(User user) throws DuplicateException {
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
         return userStorage.updateUser(user);
     }
 
-    public User getUserById(Integer id) {
+    public User getUserById(Integer id) throws DuplicateException {
         return userStorage.getUserById(id);
     }
 
-    public List<User> getUsersFrendsList(Integer id) {
+    public List<User> getUsersFrendsList(Integer id) throws DuplicateException {
         User user = getUserById(id);
         List<User> friendList = new ArrayList<>();
         for (Integer friendId : user.getFriends()) {
@@ -49,7 +49,7 @@ public class UserService {
         return friendList;
     }
 
-    public Set<User> getUsersCommonFriends(Integer id, Integer otherId) {
+    public Set<User> getUsersCommonFriends(Integer id, Integer otherId) throws DuplicateException {
         User user0 = getUserById(id);
         User user1 = getUserById(otherId);
         Set<User> commonFriends = new HashSet<>();
@@ -65,34 +65,27 @@ public class UserService {
         if (id == friendId) {
             throw new DuplicateException("User can't add own page to friends!");
         }
-        User user = getUserById(id);
-        User user1 = getUserById(friendId);
-        if (user1.getUnacceptedFriends().contains(id)){
-            user.getFriends().add(friendId);
-            user.getUnacceptedFriends().remove(friendId);
-            user1.getFriends().add(id);
-            user1.getUnacceptedFriends().remove(id);
-            return user;
-        }
-        user.getUnacceptedFriends().add(friendId);
-        user1.getUnacceptedFriends().add(id);
-        userStorage.updateUser(user);
+        getUserById(id);
+        getUserById(friendId);
+        User user1 = getUserById(id);
+        user1.getFriends().add(friendId);
         userStorage.updateUser(user1);
-        return user;
+        return user1;
     }
 
     public User deleteFriend(Integer id, Integer friendId) throws DuplicateException {
         User user = getUserById(id);
-        User user1 = getUserById(friendId);
-        if (!user.getFriends().contains(friendId) || !user1.getFriends().contains(id)) {
+        if (!user.getFriends().contains(friendId)) {
             throw new DuplicateException("Users not friends yet!");
         }
         user.getFriends().remove(friendId);
-        user1.getFriends().remove(id);
+        user.getUnacceptedFriends().add(friendId);
         userStorage.updateUser(user);
-        userStorage.updateUser(user1);
         return user;
     }
 
 }
+
+
+
 

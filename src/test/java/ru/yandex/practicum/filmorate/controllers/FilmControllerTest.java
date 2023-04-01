@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,11 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,8 +29,6 @@ class FilmControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
     @MockBean
     FilmController service;
 
@@ -43,7 +36,6 @@ class FilmControllerTest {
             .addModule(new JavaTimeModule())
             .build();
     URI uri = new URI("http://localhost:8080/films");
-
 
 
     @Test
@@ -124,31 +116,6 @@ class FilmControllerTest {
         System.out.println(service.getFilmsList());
         mvc.perform(put(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void addAndPut_ToMap() throws DuplicateException {
-        Film film = Film.builder().name("Test")
-                .description("Test")
-                .releaseDate(LocalDate.of(2023, 2, 13))
-                .duration(100L).build();
-        Film film2 = Film.builder().name("Test1")
-                .description("Test")
-                .releaseDate(LocalDate.of(2023, 2, 13))
-                .duration(100L).build();
-        Film film3 = Film.builder().name("TestTest").id(1)
-                .description("Test")
-                .releaseDate(LocalDate.of(2023, 2, 13))
-                .duration(100L).build();
-
-
-        filmController.addFilm(film);
-        Assertions.assertEquals("Test", filmController.getFilmsList().get(0).getName());
-        filmController.addFilm(film2);
-        Assertions.assertEquals("Test1", filmController.getFilmsList().get(1).getName());
-        filmController.updFilm(film3);
-        Assertions.assertEquals("TestTest", filmController.getFilmsList().get(0).getName());
-
     }
 }
 

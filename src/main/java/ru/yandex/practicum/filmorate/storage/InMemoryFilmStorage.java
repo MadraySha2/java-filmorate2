@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.util.LikesComparator;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Component("InMemory")
 public class InMemoryFilmStorage implements FilmStorage {
     private final Comparator<Film> likesComparator = new LikesComparator();
     protected final Set<Film> filmsRating = new TreeSet<>(likesComparator);

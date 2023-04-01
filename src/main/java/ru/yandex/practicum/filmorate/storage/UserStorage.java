@@ -10,10 +10,10 @@ public interface UserStorage {
 
     List<User> getUsersList();
 
-    User getUserById(Integer id);
+    User getUserById(Integer id) throws DuplicateException;
 
-    User addUser(User user);
+    User addUser(User user) throws DuplicateException;
 
-    User updateUser(User user);
+    User updateUser(User user) throws DuplicateException;
 
 }

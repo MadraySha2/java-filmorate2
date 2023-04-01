@@ -8,9 +8,7 @@ import ru.yandex.practicum.filmorate.validator.CorrectDate;
 import javax.validation.constraints.*;
 import javax.validation.executable.ValidateOnExecution;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -31,9 +29,8 @@ public class Film {
     @Positive
     private Long duration;
     private List<Genre> genres;
-
-    private MPARating rating;
-
-
+    private MPARating mpa;
     private final Set<Integer> userLikes = new HashSet<>();
+    private final Set<Integer> userUnlikeBuffer = new HashSet<>();
+
 }

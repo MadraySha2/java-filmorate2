@@ -9,12 +9,15 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class FilmService {
+
+
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
@@ -27,14 +30,20 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) throws DuplicateException {
+        if (film.getGenres() == null || film.getGenres().isEmpty()) {
+            film.setGenres(new ArrayList<>());
+        }
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
+        if (film.getGenres() == null || film.getGenres().isEmpty()) {
+            film.setGenres(new ArrayList<>());
+        }
         return filmStorage.updateFilm(film);
     }
 
-    public Film likeFilm(Integer id, Integer userId) {
+    public Film likeFilm(Integer id, Integer userId) throws DuplicateException {
         userStorage.getUserById(userId);
         Film film = filmStorage.getFilmById(id);
         film.getUserLikes().add(userId);
@@ -48,9 +57,12 @@ public class FilmService {
             throw new NotFoundException("Film not found!");
         }
         film.getUserLikes().remove(userId);
+        film.getUserUnlikeBuffer().add(userId);
         filmStorage.updateFilm(film);
+        film.getUserUnlikeBuffer().clear();
         return film;
     }
+
 
     public List<Film> getMostPopularFilms(Integer count) {
         return filmStorage.getMostPopularFilms(count);
