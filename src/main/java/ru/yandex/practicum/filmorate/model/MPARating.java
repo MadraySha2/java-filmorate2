@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MPARating {
-    private int id;
+    private Integer id;
 
     private String name;
 }

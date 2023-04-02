@@ -52,6 +52,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public Film likeFilm(Integer id, Integer userId) {
+        return null;// по прошлым тз, тут их быть не должно, поэтому добавил такие заглушки
+    }
+
+    @Override
+    public Film unlikeFilm(Integer id, Integer userId) {
+        return null;
+    }
+
+    @Override
     public List<Film> getMostPopularFilms(int count) {
         filmsRating.addAll(filmsList.values());
         return filmsRating.stream().limit(count).collect(Collectors.toList());

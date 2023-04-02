@@ -14,6 +14,12 @@ public interface UserStorage {
 
     User addUser(User user) throws DuplicateException;
 
+    Set<User> getCommonFriends(int id, int friendId);
+
     User updateUser(User user) throws DuplicateException;
+
+    int addFriend(Integer id, Integer friendId) throws DuplicateException;
+
+    int deleteFriend(Integer id, Integer friendId);
 
 }

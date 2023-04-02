@@ -11,6 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.MPARating;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,8 +34,9 @@ class FilmControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @MockBean
-    FilmController service;
+
+    FilmController service = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
+    FilmController filmController;
 
     JsonMapper objectMapper = JsonMapper.builder()
             .addModule(new JavaTimeModule())
@@ -46,9 +52,12 @@ class FilmControllerTest {
 
     @Test
     void addFilmAndRefresh_ControllerOKStatus() throws Exception {
-        Film film = Film.builder().name("nisi eiusmod")
+        Film film = Film.builder()
+                .id(1)
+                .name("nisi eiusmod")
                 .description("adipisicing")
                 .releaseDate(LocalDate.of(2022, 2, 13))
+                .mpa(new MPARating(1, "G"))
                 .duration(100L).build();
         String json = objectMapper.writeValueAsString(film);
 
@@ -113,7 +122,6 @@ class FilmControllerTest {
 
         mvc.perform(post(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-        System.out.println(service.getFilmsList());
         mvc.perform(put(uri).content(errJson3).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

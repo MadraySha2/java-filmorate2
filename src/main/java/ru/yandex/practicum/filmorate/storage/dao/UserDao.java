@@ -15,11 +15,12 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Primary
 @RequiredArgsConstructor
-public class UserDB implements UserStorage {
+public class UserDao implements UserStorage {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -82,7 +83,6 @@ public class UserDB implements UserStorage {
         }
         User userById = getUserById(user.getId());// проверка на существование user
         String sqlQuery = "update USERS set email = ?, login = ?, name = ?, birthday = ? where ID = ?";
-        String sqlCheckDelete = "select ACCEP";
         jdbcTemplate.update(sqlQuery,
                 user.getEmail(),
                 user.getLogin(),
@@ -103,36 +103,29 @@ public class UserDB implements UserStorage {
         return user;
     }
 
-    public int addFriend(Integer id, Integer friendId) throws DuplicateException {
-        String sqlCheck = "select * from FRIENDS " +
-                "where USER_ID = ? and FRIEND_ID = ?";
-        SqlRowSet checkFriend = jdbcTemplate.queryForRowSet(sqlCheck, friendId, id);
-        if (id == friendId) {
-            throw new DuplicateException("Duplicate detected!");
-        }
-        if (!checkFriend.next()) {
-            String sqlInsert = "insert into FRIENDS (USER_ID, FRIEND_ID, ACCEPTED)" +
-                    "values(?, ?, ?)";
-            jdbcTemplate.update(sqlInsert, id, friendId, false);
-            return friendId;
-        } else {
-            String sqlInsert = "insert into FRIENDS (USER_ID, FRIEND_ID, ACCEPTED)" +
-                    "values(?, ?, ?)";
-            jdbcTemplate.update(sqlInsert, id, friendId, true);
-            String sqlSetStatus = "update FRIENDS set ACCEPTED = true " +
-                    "where USER_ID = ? and FRIEND_ID = ?";
-            jdbcTemplate.update(sqlSetStatus, friendId, id);
-            return id;
-        }
-
+    public Set<User> getCommonFriends(int id, int friendId) {
+        String sqlQuery = "select * " +
+                "from USERS " +
+                "where ID in " +
+                "(select friend_id from users u " +
+                "join friends f on u.id = f.user_id where u.id = ?) " +
+                "and ID in " +
+                "(select friend_id " +
+                "from users u " +
+                "join friends f on u.id = f.user_id where u.id = ?)";
+        return Set.copyOf(jdbcTemplate.query(sqlQuery, (rs, rowNum) -> convert(rs), id, friendId));
     }
 
-    private int deleteFriend(Integer id, Integer friendId) {
+    public int addFriend(Integer id, Integer friendId) throws DuplicateException {
+        String sqlInsert = "insert into FRIENDS (USER_ID, FRIEND_ID, ACCEPTED)" +
+                "values(?, ?, ?)";
+        jdbcTemplate.update(sqlInsert, id, friendId, false);
+        return friendId;
+    }
+
+    public int deleteFriend(Integer id, Integer friendId) {
         String sqlDeleteFriend = "delete from FRIENDS where FRIEND_ID = ? and USER_ID = ?";
-        jdbcTemplate.update(sqlDeleteFriend, id, friendId);
-        String sqlSetStatus = "update FRIENDS set ACCEPTED = false " +
-                "where USER_ID = ? and FRIEND_ID = ?";
-        jdbcTemplate.update(sqlSetStatus, friendId, id);
+        jdbcTemplate.update(sqlDeleteFriend, friendId, id);
         return id;
     }
 

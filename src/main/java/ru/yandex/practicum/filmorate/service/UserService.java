@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,38 +49,28 @@ public class UserService {
     }
 
     public Set<User> getUsersCommonFriends(Integer id, Integer otherId) throws DuplicateException {
-        User user0 = getUserById(id);
+        User user0 = getUserById(id);// тоже для проверки, есть ли юзер
         User user1 = getUserById(otherId);
-        Set<User> commonFriends = new HashSet<>();
-        for (Integer friend : user0.getFriends()) {
-            if (user1.getFriends().contains(friend)) {
-                commonFriends.add(getUserById(friend));
-            }
-        }
-        return commonFriends;
+        return userStorage.getCommonFriends(id, otherId);
     }
 
-    public User addFriend(Integer id, Integer friendId) throws DuplicateException {
+    public int addFriend(Integer id, Integer friendId) throws DuplicateException {
         if (id == friendId) {
             throw new DuplicateException("User can't add own page to friends!");
         }
-        getUserById(id);
+        if (getUserById(id).getFriends().contains(friendId)) {
+            throw new DuplicateException("You already send a request!");
+        }
         getUserById(friendId);
-        User user1 = getUserById(id);
-        user1.getFriends().add(friendId);
-        userStorage.updateUser(user1);
-        return user1;
+        return userStorage.addFriend(id, friendId);
     }
 
-    public User deleteFriend(Integer id, Integer friendId) throws DuplicateException {
+    public int deleteFriend(Integer id, Integer friendId) throws DuplicateException {
         User user = getUserById(id);
         if (!user.getFriends().contains(friendId)) {
             throw new DuplicateException("Users not friends yet!");
         }
-        user.getFriends().remove(friendId);
-        user.getUnacceptedFriends().add(friendId);
-        userStorage.updateUser(user);
-        return user;
+        return userStorage.deleteFriend(id, friendId);
     }
 
 }
