@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.DuplicateException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
@@ -10,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmService {
 
-    @Autowired
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    public List<Film> getFilmsList() {
+    public List<Film> getFilmsList() throws SQLException {
         return filmStorage.getFilmsList();
     }
 
@@ -50,7 +49,7 @@ public class FilmService {
         if (film.getUserLikes().contains(userId)) {
             throw new DuplicateException("You already liked it!");
         }
-        filmStorage.likeFilm(id, userId);
+        filmStorage.addFilmLike(id, userId);
         return film;
     }
 
@@ -59,11 +58,11 @@ public class FilmService {
         if (!film.getUserLikes().contains(userId)) {
             throw new NotFoundException("User not found!");
         }
-        filmStorage.unlikeFilm(id, userId);
+        filmStorage.deleteFilmLike(id, userId);
         return film;
     }
 
-    public List<Film> getMostPopularFilms(Integer count) {
+    public List<Film> getMostPopularFilms(Integer count) throws SQLException {
         return filmStorage.getMostPopularFilms(count);
     }
 }

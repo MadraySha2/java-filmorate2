@@ -52,13 +52,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film likeFilm(Integer id, Integer userId) {
-        return null;// по прошлым тз, тут их быть не должно, поэтому добавил такие заглушки
+    public Film addFilmLike(Integer id, Integer userId) {
+        Film film = filmsList.get(id);
+        film.getUserLikes().add(userId);
+        updateFilm(film);
+        return film;
     }
 
     @Override
-    public Film unlikeFilm(Integer id, Integer userId) {
-        return null;
+    public Film deleteFilmLike(Integer id, Integer userId) {
+        Film film = filmsList.get(id);
+        film.getUserLikes().remove(userId);
+        updateFilm(film);
+        return film;
     }
 
     @Override

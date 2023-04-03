@@ -76,6 +76,14 @@ public class UserDao implements UserStorage {
         return user;
     }
 
+    public void deleteUsers() {
+        //метод для тестов, пока что
+        String sqlDelete = "delete from USERS";
+        String sqlRestart = "ALTER TABLE USERS ALTER COLUMN ID RESTART WITH 1";
+        jdbcTemplate.update(sqlDelete);
+        jdbcTemplate.update(sqlRestart);
+    }
+
     @Override
     public User updateUser(User user) throws DuplicateException {
         if (user.getName() == null || user.getName().equals("")) {

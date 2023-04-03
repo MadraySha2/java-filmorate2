@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPARating;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,9 +28,10 @@ public class FilmDaoTest {
     private final FilmDao filmStorage;
     private final UserDao userDao;
 
+
     @Order(1)
     @Test
-    void getAllFilms() {
+    void getAllFilms() throws SQLException {
         filmStorage.addFilm(Film.builder()
                 .name("test")
                 .description("test")
@@ -130,10 +132,10 @@ public class FilmDaoTest {
                 .build());
 
         assertThat(filmStorage.getFilmById(1).getUserLikes().size()).isEqualTo(0);
-        filmStorage.likeFilm(1, 1);
+        filmStorage.addFilmLike(1, 1);
         assertThat(filmStorage.getFilmById(1).getUserLikes().size()).isEqualTo(1);
         assertThat(filmStorage.getFilmById(1).getUserLikes().contains(1)).isTrue();
-        filmStorage.unlikeFilm(1,1);
+        filmStorage.deleteFilmLike(1,1);
         assertThat(filmStorage.getFilmById(1).getUserLikes().size()).isEqualTo(0);
     }
 
