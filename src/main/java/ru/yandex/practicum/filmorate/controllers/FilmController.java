@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -16,10 +17,11 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmController {
+
     private final FilmService filmService;
 
     @GetMapping
-    public List<Film> getFilmsList() {
+    public List<Film> getFilmsList() throws SQLException {
         return filmService.getFilmsList();
     }
 
@@ -29,7 +31,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getRatedFilmsList(@RequestParam(required = false, defaultValue = "10") Integer count) {
+    public List<Film> getRatedFilmsList(@RequestParam(required = false, defaultValue = "10") Integer count) throws SQLException {
         return filmService.getMostPopularFilms(count);
     }
 
@@ -44,7 +46,7 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
+    public Film likeFilm(@PathVariable Integer id, @PathVariable Integer userId) throws DuplicateException {
         return filmService.likeFilm(id, userId);
     }
 

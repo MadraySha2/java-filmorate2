@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.util.LikesComparator;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Component("InMemory")
 public class InMemoryFilmStorage implements FilmStorage {
     private final Comparator<Film> likesComparator = new LikesComparator();
     protected final Set<Film> filmsRating = new TreeSet<>(likesComparator);
@@ -48,6 +48,22 @@ public class InMemoryFilmStorage implements FilmStorage {
         } else {
             throw new NotFoundException("Film not found!");
         }
+        return film;
+    }
+
+    @Override
+    public Film addFilmLike(Integer id, Integer userId) {
+        Film film = filmsList.get(id);
+        film.getUserLikes().add(userId);
+        updateFilm(film);
+        return film;
+    }
+
+    @Override
+    public Film deleteFilmLike(Integer id, Integer userId) {
+        Film film = filmsList.get(id);
+        film.getUserLikes().remove(userId);
+        updateFilm(film);
         return film;
     }
 
